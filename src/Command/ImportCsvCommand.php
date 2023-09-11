@@ -2,8 +2,7 @@
 
 namespace App\Command;
 
-use App\Entity\PokemonNameConverter;
-use Doctrine\ORM\EntityManager;
+use App\Serializer\PokemonNormalizer;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -11,7 +10,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,9 +51,9 @@ class ImportCsvCommand extends Command
         $serializer = new Serializer(
             [
                 new ArrayDenormalizer(),
-                new ObjectNormalizer(null, new PokemonNameConverter())
+                new PokemonNormalizer()
             ],
-            [new CsvEncoder([CsvEncoder::KEY_SEPARATOR_KEY => '|'])]
+            [new CsvEncoder([CsvEncoder::KEY_SEPARATOR_KEY => '*'])]
         );
         $csvData = file_get_contents($file);
         $pokemons = $serializer->deserialize($csvData, 'App\Entity\Pokemon[]', 'csv'); 

@@ -50,7 +50,7 @@ class Pokemon
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $generation = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::BOOLEAN) ]
     private ?bool $legendary = null;
 
     public function getId(): ?int
