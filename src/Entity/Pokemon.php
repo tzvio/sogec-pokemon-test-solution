@@ -2,14 +2,32 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Put;
+use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Delete;
+use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PokemonRepository;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 
 #[ORM\Entity(repositoryClass: PokemonRepository::class)]
-#[ApiResource]
-
+#[ApiResource(
+    operations:[
+    new GetCollection(paginationItemsPerPage: 50),
+    new Get(),
+    new Put(),
+    new Patch(),
+    new Delete()])
+]
+#[ApiFilter(
+    SearchFilter::class, 
+    properties: ['name' => 'partial', 'type1' => 'exact', 'type2' => 'exact', 'generation' => 'exact'])]
+#[ApiFilter(BooleanFilter::class, properties: ['legendary'])]
 class Pokemon
 {
     #[ORM\Id]
