@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\Put;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
@@ -35,6 +35,10 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 #[AssertCanDelete(groups: ['deleteValidation'])]
 class Pokemon
 {
+    public const TYPES = [
+        'Grass', 'Poison', 'Fire', 'Flying', 'Dragon', 'Water', 'Bug', 'Normal', 'Electric', 'Ground', 
+        'Fairy', 'Fighting', 'Psychic', 'Rock', 'Ghost', 'Ice', 'Steel', 'Dark'];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -43,6 +47,7 @@ class Pokemon
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
+    #[Assert\Choice(choices: Pokemon::TYPES, message: 'Choose a valid pokemon type')]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type1 = null;
 
