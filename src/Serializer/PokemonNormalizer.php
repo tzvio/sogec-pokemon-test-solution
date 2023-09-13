@@ -12,9 +12,15 @@ class PokemonNormalizer implements DenormalizerInterface
     {
         $objectNormalizer = new ObjectNormalizer();
         $pokemon = $objectNormalizer->denormalize($data, $type, $format, $context);
-        $pokemon->setLegendary(filter_var($data['Legendary'], FILTER_VALIDATE_BOOLEAN));
-        $pokemon->setSpatk($data['Sp. Atk']);
-        $pokemon->setSpdef($data['Sp. Def']);
+        if (isset($data['Legendary'])) {
+            $pokemon->setLegendary(filter_var($data['Legendary'], FILTER_VALIDATE_BOOLEAN));
+        }
+        if (isset($data['Sp. Atk'])) {
+            $pokemon->setSpatk($data['Sp. Atk']);
+        }
+        if (isset($data['Sp. Def'])) {
+            $pokemon->setSpdef($data['Sp. Def']);
+        }
         return $pokemon;
     }
 

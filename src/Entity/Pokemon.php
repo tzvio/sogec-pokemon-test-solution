@@ -11,7 +11,10 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\PokemonRepository;
+use App\State\PokemonRemoveProcessor;
 use ApiPlatform\Metadata\GetCollection;
+use App\Validator\Constraints\PointsLimit;
+use App\Validator\Constraints\AssertCanDelete;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 
@@ -20,14 +23,16 @@ use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
     operations:[
     new GetCollection(paginationItemsPerPage: 50),
     new Get(),
-    new Put(),
-    new Patch(),
-    new Delete()])
+    new Patch(security: "is_granted('ROLE_USER')"),
+    new Delete(security: "is_granted('ROLE_USER')", validationContext:['groups' => ['deleteValidation']], processor: PokemonRemoveProcessor::class )
+    ])
 ]
 #[ApiFilter(
     SearchFilter::class, 
     properties: ['name' => 'partial', 'type1' => 'exact', 'type2' => 'exact', 'generation' => 'exact'])]
 #[ApiFilter(BooleanFilter::class, properties: ['legendary'])]
+#[PointsLimit]
+#[AssertCanDelete(groups: ['deleteValidation'])]
 class Pokemon
 {
     #[ORM\Id]
